@@ -17,10 +17,12 @@ const dp = require("./dbConnection/dbcon")
 const publicDirectory = path.join(__dirname,'./public');
 app.use(express.static(publicDirectory));
 
-app.set('view engine','hbs');
+// app.set('view engine','hbs');   // this was just the tesing pages later i have seen that i have to make it fronend using React
 
 const controller = require('./routes/pages');
 app.use(controller);
+
+
 const autho = require("./routes/router");
 app.use(autho);
 

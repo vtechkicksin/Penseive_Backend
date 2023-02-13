@@ -39,3 +39,4 @@ router.get(
     authController.searchApi    // this is a search based on the DeviceId
 );
 
+I have used JWT Token for the Authentication of users and written a custom middleware which will check after login if the user is valid or not with the help of passing JWT token
