@@ -26,6 +26,10 @@ router.get(
     Authentication.checkToken,
     authController.page);
 
-
+router.get(
+    '/searchData',
+    Authentication.checkToken,
+    authController.searchApi
+);
 
 module.exports = router;

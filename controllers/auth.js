@@ -1,3 +1,4 @@
+const dotenv = require("dotenv").config()
 const async = require("hbs/lib/async");
 const db = require("../dbConnection/dbcon");
 const bcrypt = require('bcrypt');
@@ -57,7 +58,7 @@ class FormData{
                     if(result)
                     {
                         
-                        const jsontoken = sign({id:email}, "qwe1234" , {
+                        const jsontoken = sign({id:email}, process.env.SECRET_KEY , {
                             expiresIn: "1day"
                         });
                         return res.json({
@@ -80,12 +81,14 @@ class FormData{
         }
         
     }
-
+     
+    
     static async data(req,res)
     {
         try 
         {
-            await db.query(`SELECT * from data` , (err,data)=>{
+            const device = req.query.search;
+            await db.query(`SELECT * from data where DeviceId='${device}' limit 1` , (err,data)=>{
                 if(err)
                 {
                     console.log(err);
@@ -93,11 +96,9 @@ class FormData{
                 else 
                 {
                     console.log(data);
-                    return res.json(data);
+                    return res.json({data});
                 }
-            });
-
-            
+            });            
         } 
         catch (error) 
         {
@@ -107,7 +108,7 @@ class FormData{
     static async page(req,res)
     {
         const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 7;
+        const limit = parseInt(req.query.limit) || 5;
         // const startIndex = (page - 1) * limit;
         // const endIndex = page * limit;
 
@@ -127,7 +128,7 @@ class FormData{
         });
         //select * from (select * from data order by DeviceId,Timestamp DESC,Device_Type) x group by DeviceId
 
-        db.query(`select * from data LIMIT ${limit} OFFSET ${(page - 1) * limit}`,(err,data)=>{
+        db.query(`select * from (select * from data order by DeviceId,Timestamp DESC,Device_Type) x group by DeviceId LIMIT ${limit} OFFSET ${(page - 1) * limit}`,(err,data)=>{
             if(err)
             {
                 console.log(err);
@@ -140,6 +141,28 @@ class FormData{
         });
         
         
+    }
+    static async searchApi(req,res)
+    {
+        try 
+        {
+            const device = req.query.search;
+            await db.query(`SELECT * from data where DeviceId='${device}'` , (err,data)=>{
+                if(err)
+                {
+                    console.log(err);
+                }
+                else 
+                {
+                    console.log(data);
+                    return res.json({data});
+                }
+            });            
+        } 
+        catch (error) 
+        {
+            console.log(error);
+        }
     }
 }
 

@@ -1,5 +1,5 @@
 const { verify, decode } = require("jsonwebtoken");
-
+const dotenv = require("dotenv").config();
 
 class middleware
 {
@@ -9,7 +9,7 @@ class middleware
         if(token)
         {
             token = token.slice(7);
-            verify(token, "qwe1234",(err,decode)=>{
+            verify(token, process.env.SECRET_KEY,(err,decode)=>{
                 if(err)
                 {
                     console.log("Any error is aa rhi hai")
